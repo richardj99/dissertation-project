@@ -1,6 +1,8 @@
 
-Analysis/xmlParser/.idea/misc.xml
-Analysis/xmlParser/.idea/modules.xml
-Analysis/xmlParser/.idea/workspace.xml
-Analysis/xmlParser/out/production/xmlParser/xmlParser.class
+Analysis/xmlParser/.idea/
+Analysis/xmlParser/out/
 Analysis/xmlParser/xmlParser.iml
+project/.idea/
+project/project.iml
+project/out/
+
