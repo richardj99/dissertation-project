@@ -5,6 +5,7 @@ import tensorflow as tf
 
 import matplotlib.pyplot as plt
 
+
 def plot_graphs(history, string):
     plt.plot(history.history[string])
     plt.plot(history.history['val_'+string], '')
@@ -13,8 +14,10 @@ def plot_graphs(history, string):
     plt.legend([string, 'val_'+string])
     plt.show()
 
+
 dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True,
                           as_supervised=True)
+
 train_dataset, test_dataset = dataset['train'], dataset['test']
 
 print(train_dataset)
@@ -46,7 +49,7 @@ test_dataset = test_dataset.padded_batch(BATCH_SIZE, test_dataset.output_shapes)
 
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(encoder.vocab_size, 64),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation='sigmoid')),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, activation='sigmoid', recurrent_activation='sigmoid')),
     tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
