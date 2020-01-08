@@ -9,3 +9,5 @@ PoliticalBiasAnalysis/.idea/
 PoliticalBiasAnalysis/dissertation-venv/
 dissertation-venv/
 Sandbox/
+Analysis/parlParse/
+xmlParser/hansardData.csv
