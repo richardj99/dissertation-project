@@ -7,6 +7,7 @@ PolitikaUserInterface/PolitikaUserInterface.iml
 PolitikaUserInterface/out/
 PoliticalBiasAnalysis/.idea/
 PoliticalBiasAnalysis/dissertation-venv/
+PoliticalBiasAnalysis/__pychache__/
 dissertation-venv/
 Sandbox/
 Analysis/parlParse/
@@ -14,3 +15,5 @@ xmlParser/.idea/
 xmlParser/out/
 xmlParser/xmlParser.iml
 xmlParser/hansardData.csv
+venv/
+PoliticalBiasAnalysis\__pychache__\

@@ -18,7 +18,7 @@ def build_data_lists(path):
     return textList, partyList
 
 
-csvPath = "C:\\Users\\richa\\OneDrive\\Documents\\Year 3\\CSC-30014\\dissertation-project\\xmlParser\\hansardData.csv"
+csvPath = "C:\\Users\\richa\\OneDrive\\Documents\\dissertation-project\\xmlParser\\hansardData.csv"
 
 textData, partyData = build_data_lists(csvPath)
 
