@@ -24,7 +24,7 @@ public class xmlParser {
     //FileWriter csvWriter;
     BufferedWriter bw;
 
-    Stack<String[]> libDemStack, conStack, labStack, dupStack, snpStack;
+    Stack<String[]> conStack, labStack;
 
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, ParseException {
         xmlParser xmlP = new xmlParser();
@@ -33,27 +33,25 @@ public class xmlParser {
         xmlP.labStack =  new Stack<String[]>();
 
 
-        String jsonFile = "C:\\Users\\richa\\OneDrive\\Documents\\Year 3\\CSC-30014\\" +
-                "dissertation-project\\Analysis\\parlParse\\people.json";
+        String jsonFile = "C:\\Users\\richa\\OneDrive\\Documents\\dissertation-project\\Analysis\\parlParse\\people.json";
         Object obj = new JSONParser().parse(new FileReader(jsonFile));
         JSONObject jo = (JSONObject) obj;
         xmlP.personsArray = (JSONArray) jo.get("persons");
         xmlP.orgArray = (JSONArray) jo.get("organizations");
         xmlP.memArray = (JSONArray) jo.get("memberships");
 
-        //xmlP.csvWriter = new FileWriter("hansardDataOld.csv");
-        xmlP.bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hansardData.csv", true)
-                , StandardCharsets.UTF_8));
+        xmlP.bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("hansardDataConWeighted.csv", true), StandardCharsets.UTF_8));
 
         xmlP.retrieveParty("uk.org.publicwhip/member/40334");
-        String scrapedUrl = "C:\\Users\\richa\\OneDrive\\Documents\\Year 3\\CSC-30014\\dissertation-project\\" +
-                "Analysis\\parlParse\\scrapedxml\\debates\\";
+        String scrapedUrl = "C:\\Users\\richa\\OneDrive\\Documents\\dissertation-project\\Analysis\\parlParse\\scrapedxml\\debates\\";
         File scrapedDir = new File (scrapedUrl);
         File[] debateFiles = scrapedDir.listFiles();
         for(File f: debateFiles){
+            System.out.println(f.getName());
             xmlP.scrapeXML(f);
         }
-        xmlP.depleteStacks();
+        xmlP.depleteStacksConWeighted();
         System.out.println(xmlP.lineCount);
     }
 
@@ -66,14 +64,22 @@ public class xmlParser {
         for(int i=0; i<nodeList.getLength(); i++){
             Element element = (Element)nodeList.item(i);
             NodeList childNodeList = element.getChildNodes();
-            Node node = childNodeList.item(1);
-            if(node.getNodeName() == "p"){
-                int party = retrieveParty(element.getAttribute("speakerid"));
-                String textContents = node.getTextContent();
-                String fileName = xmlFile.getName();
-                //writeToCSV(fileName, textContents, party);
-                writeToStack(fileName, textContents, party);
+            String speech = " ";
+            for(int j=0; j<childNodeList.getLength(); j++) {
+                Node node = childNodeList.item(j);
+                if (node.getNodeName() == "p") {
+                    int party = retrieveParty(element.getAttribute("speakerid"));
+                    String textContents = node.getTextContent();
+                    speech = speech + " " + textContents;
+
+                }
             }
+            //System.out.println(speech);
+            //System.out.println("\n\n\n\n\n\n");
+            String fileName = xmlFile.getName();
+            int party = retrieveParty(element.getAttribute("speakerid"));
+            writeToStack(xmlFile.getName(), speech, party);
+
         }
     }
 
@@ -131,8 +137,41 @@ public class xmlParser {
         }
     }
 
+    public void depleteStacksLibWeighted() throws IOException{
+        Collections.shuffle(conStack); Collections.shuffle(labStack);
+        System.out.println("Expected Output: " + labStack.size()+(labStack.size()/2));
+        System.out.println("Depleting Stacks");
+        int labSize = labStack.size();
+        int conSize = labSize/2;
+        for(int i=0; i<labSize; i++){
+            writeToCSV(labStack.pop());
+            lineCount++;
+        }
+        for(int i=0; i<conSize; i++){
+            writeToCSV(conStack.pop());
+            lineCount++;
+        }
+    }
+
+    public void depleteStacksConWeighted() throws IOException{
+        Collections.shuffle(conStack); Collections.shuffle(labStack);
+        System.out.println("Expected Output: " + labStack.size()+(labStack.size()/2));
+        System.out.println("Depleting Stacks");
+        int conSize = labStack.size();
+        int labSize = conSize/2;
+        for(int i=0; i<labSize; i++){
+            writeToCSV(labStack.pop());
+            lineCount++;
+        }
+        for(int i=0; i<conSize; i++){
+            writeToCSV(conStack.pop());
+            lineCount++;
+        }
+    }
+
     public void writeToStack(String i_fileName, String i_textContents, int i_party){
         // Format speech text for storage in csv
+        //if((i_textContents.charAt(0)).equals("\"")){}
         i_textContents = i_textContents.replace("\"", "\"\"");
         // Count length of text to exclude shorter speeches.
         int textWordCount = 0;
