@@ -16,28 +16,33 @@ public class ListenerAnalyseButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        uiInstance.log("Analysis Started");
-        String textInput = uiInstance.getTextInput(true);
-        uiInstance.log("Inputted Text Loaded");
+        uiInstance.log("\n\n");
+        uiInstance.log("Text Analysis Started");
+        String textInput = uiInstance.getTextInput(true).replace("\n", "");
+        uiInstance.log("Text Loaded into Neural Network");
         String[] spaceArray = textInput.split(" ");
-        uiInstance.log(Integer.toString(spaceArray.length) + " Words To Be Analysed");
+        uiInstance.log(spaceArray.length + " Words To Be Analysed");
         uiInstance.setWordsAnalysed(Integer.toString(spaceArray.length));
         new Thread(() -> {
             ArrayList<String> encodedTextArray;
             Double[] results;
             Object[] retArr;
-            uiInstance.log("Starting Neural Network Process");
-            //if(uiInstance.isParagraphAnalysedSelected() == true){
+            uiInstance.log("The Neural Network Has Been started, The Control Panel and Log will be updated once " +
+                    "a result has been achieved");
+            if(uiInstance.isParagraphAnalysedSelected() == true){
                 retArr = logicInstance.analyseText(textInput);
                 results = (Double[]) retArr[0];
                 encodedTextArray = (ArrayList<String>) retArr[1];
-            //}
+                uiInstance.setEncodedTextPanel(encodedTextArray);
+            } else{
+                retArr = logicInstance.analyseBySentence(textInput, uiInstance);
+                results = (Double[]) retArr[0];
+            }
 
-            uiInstance.log("Neural Network Predictions Completed");
-            uiInstance.log("Neural Network Results Retreived");
-            uiInstance.setEncodedTextPanel(encodedTextArray);
+            uiInstance.log("Neural Network Predictions Finished and Retrieved");
             uiInstance.log("Right-Leaning Score: " + results[0] + "\t Left-Leaning Score: " + results[1]);
             uiInstance.setPoliticalScores(results);
+            uiInstance.setFinalResult(logicInstance.calculateFinalBiasResult(results));
         }).start();
     }
 }

@@ -1,6 +1,13 @@
 package Politika;
 
+import com.bulenkov.darcula.DarculaLaf;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +33,8 @@ public class PolitikaInterface {
     private JComboBox searchTermBox;
     private JButton searchButton;
     private JTextArea logArea;
+    private JLabel finalResultLabel;
+    private JTextArea nnSpecsArea;
 
     private PolitikaLogic logicInstance;
 
@@ -43,11 +52,39 @@ public class PolitikaInterface {
         searchButton.addActionListener(new ListenerSearchButton(this, logicInstance));
         saveButton.addActionListener(new ListenerSaveButton(this, logicInstance));
         analyseButton.addActionListener(new ListenerAnalyseButton(this, logicInstance));
+        searchResultsTable.addMouseListener(new ListenerReportButton(this));
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //f.pack();
-        f.setMinimumSize(new Dimension(1280, 720));
+        f.setMinimumSize(new Dimension(700, 500));
         f.setVisible(true);
         this.log("Politika Started");
+        this.log("Loading in Neural Network Specs");
+        new Thread(() -> {
+            ArrayList<String> nnSpecs = logicInstance.retreiveNNSpecs();
+            appendNNSpecs(nnSpecs);
+        }).start();
+    }
+
+    public void appendNNSpecs(ArrayList<String> nnSpecs){
+        nnSpecsArea.append("Vocab Size - \t" + nnSpecs.get(0)+"\n\n");
+        nnSpecsArea.append("Number of Layers - \t" + nnSpecs.get(1));
+        nnSpecsArea.append("\n\n");
+        for(int i=1; i<=Integer.parseInt(nnSpecs.get(1)); i++){
+            String[] lc = nnSpecs.get(i+1).split(" ");
+            nnSpecsArea.append("Layer " + i + ":\n\t");
+            String param1, param2;
+            if(i == 1){
+                param1 = "Input Size: ";
+                param2 = "Output Size: ";
+            }else{
+                param1 = "Layer Size: ";
+                param2 = "Activation Function: ";
+
+            }
+            nnSpecsArea.append("Name: " + lc[0] + "\n\t" + param1 + lc[1] + "\n\t" + param2 + lc[2] + "\n\n");
+        }
+        this.log("Neural Network Configuration Loaded");
+        this.log("Details on the Neural Network used in this version of Politika can be found in the Neural Network Configurations Tab");
     }
 
     public void log(String message){
@@ -87,19 +124,55 @@ public class PolitikaInterface {
         leftVal.setText("" + results[1]);
     }
 
-    void setEncodedTextPanel(ArrayList<String> encodedTextArray) {
+    void clearEncodedTextPanel(){
         encodedTextArea.setText(null);
+    }
+
+    void setEncodedTextPanel(ArrayList<String> encodedTextArray) {
         for (int i = 0; i < encodedTextArray.size(); i++) {
             String item = encodedTextArray.get(i);
             encodedTextArea.append(item + "\n");
         }
     }
 
+    void setFinalResult(String finalResult){
+        finalResultLabel.setText(finalResult);
+    }
+
     public void setWordsAnalysed(String wordsAnalysed){wordsAnalysedLabel.setText(wordsAnalysed);}
+
+    public void populateTable(ArrayList<ArrayList<String>> results){
+        String[] columnNames = {"Article ID", "Article Name", "Author(s)", "Date", "Article Text",
+                "Right-Leaning Score", "Left-Leaning Score", "Party"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0){
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+        for(ArrayList<String> row : results){
+            String[] rowArray = row.toArray(new String[row.size()]);
+            model.addRow(rowArray);
+        }
+        searchResultsTable.setModel(model);
+        TableColumnModel tcm = searchResultsTable.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(0));
+        tcm.removeColumn(tcm.getColumn((3)));
+
+    }
+
+    public void highlightText(Color color, int startIndex, int endIndex){
+        Highlighter highlighter = textInputArea.getHighlighter();
+        Highlighter.HighlightPainter painter =
+                new DefaultHighlighter.DefaultHighlightPainter(color);
+        try{highlighter.addHighlight(startIndex, endIndex, painter);}
+        catch (BadLocationException e) {e.printStackTrace();}
+    }
 
     public static void main(String args[]){
         PolitikaLogic logicInstance = new PolitikaLogic();
         new Thread(() -> {
+            try {UIManager.setLookAndFeel(new DarculaLaf());}
+            catch (UnsupportedLookAndFeelException e) {e.printStackTrace();}
             PolitikaInterface uiInstance = new PolitikaInterface(logicInstance);
         }).start();
 

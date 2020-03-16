@@ -1,0 +1,6 @@
+31185
+4
+embedding 31185 10
+lstm 10 tanh
+dense 10 relu
+dense_1 2 sigmoid

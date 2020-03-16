@@ -1,14 +1,8 @@
 
-Analysis/xmlParser/.idea/
-Analysis/xmlParser/out/
-Analysis/xmlParser/xmlParser.iml
-PolitikaUserInterface/.idea/
-PolitikaUserInterface/PolitikaUserInterface.iml
-PolitikaUserInterface/out/
-PoliticalBiasAnalysis/.idea/
-PoliticalBiasAnalysis/dissertation-venv/
-PoliticalBiasAnalysis/__pychache__/
-dissertation-venv/
+Analysis/Poster/
+Politika/out/
+Politika/.idea/
+Politika/Politika.iml
 Sandbox/
 Analysis/parlParse/
 xmlParser/.idea/
@@ -16,4 +10,9 @@ xmlParser/out/
 xmlParser/xmlParser.iml
 xmlParser/hansardData.csv
 venv/
-PoliticalBiasAnalysis\__pychache__\
+.vscode/
+NeuralNetwork/dataMassage/
+xmlParser/*.csv
+Politika/src/META-INF/MANIFEST.MF
+Poster/Draft.docx
+Poster/Draft.docx

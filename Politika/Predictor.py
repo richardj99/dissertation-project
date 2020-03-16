@@ -37,11 +37,11 @@ if(os.path.exists("jwrite")):
     #print(input)
     encoded_input = encode_text(input)
     predictions = sample_predict(encoded_input, True)
-    pwrite = open("pwrite", "w+")
+    pwrite = open("pwrite", "w+", encoding="utf-8")
     for i in encoded_input:
         if i == 0:
             break
-        pwrite.writelines(str(i)+",")
+        pwrite.writelines(str(i)+"\t["+encoder.decode([i])+"],")
     pwrite.writelines("\n")
     #print(str(predictions.item(0)) + "," + str(predictions.item(1)))
     pwrite.writelines(str(predictions.item(0)) + "," + str(predictions.item(1)))

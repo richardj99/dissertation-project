@@ -33,8 +33,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <grid id="48a4c" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
+                  <grid id="48a4c" layout-manager="GridBagLayout">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -44,6 +43,7 @@
                       <scrollpane id="b787c">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="1.0" weighty="2.0"/>
                         </constraints>
                         <properties/>
                         <border type="none"/>
@@ -60,77 +60,108 @@
                       </scrollpane>
                     </children>
                   </grid>
-                  <tabbedpane id="ac455" binding="tabbedPane2" default-binding="true">
+                  <grid id="daf75" layout-manager="GridBagLayout">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="200" height="200"/>
-                      </grid>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <grid id="65cab" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                        <margin top="0" left="0" bottom="0" right="0"/>
+                      <tabbedpane id="ac455" binding="tabbedPane2" default-binding="true">
                         <constraints>
-                          <tabbedpane title="Log"/>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                            <preferred-size width="200" height="200"/>
+                          </grid>
+                          <gridbag weightx="1.0" weighty="0.6"/>
                         </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <scrollpane id="dd55e">
+                          <grid id="65cab" layout-manager="GridBagLayout">
                             <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <horizontalScrollBarPolicy value="31"/>
-                            </properties>
-                            <border type="none"/>
-                            <children>
-                              <component id="46931" class="javax.swing.JTextArea" binding="logArea">
-                                <constraints/>
-                                <properties>
-                                  <editable value="false"/>
-                                  <lineWrap value="true"/>
-                                  <wrapStyleWord value="true"/>
-                                </properties>
-                              </component>
-                            </children>
-                          </scrollpane>
-                        </children>
-                      </grid>
-                      <grid id="338eb" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                        <margin top="0" left="0" bottom="0" right="0"/>
-                        <constraints>
-                          <tabbedpane title="Encoding"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children>
-                          <scrollpane id="b4178">
-                            <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                              <tabbedpane title="Log"/>
                             </constraints>
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <component id="10e39" class="javax.swing.JTextArea" binding="encodedTextArea">
-                                <constraints/>
-                                <properties/>
-                              </component>
+                              <scrollpane id="dd55e">
+                                <constraints>
+                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                                  <gridbag weightx="1.0" weighty="1.0"/>
+                                </constraints>
+                                <properties>
+                                  <horizontalScrollBarPolicy value="31"/>
+                                </properties>
+                                <border type="none"/>
+                                <children>
+                                  <component id="46931" class="javax.swing.JTextArea" binding="logArea">
+                                    <constraints/>
+                                    <properties>
+                                      <editable value="false"/>
+                                      <lineWrap value="true"/>
+                                      <wrapStyleWord value="true"/>
+                                    </properties>
+                                  </component>
+                                </children>
+                              </scrollpane>
                             </children>
-                          </scrollpane>
+                          </grid>
+                          <grid id="338eb" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                            <margin top="0" left="0" bottom="0" right="0"/>
+                            <constraints>
+                              <tabbedpane title="Encoding"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <scrollpane id="b4178">
+                                <constraints>
+                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                                </constraints>
+                                <properties/>
+                                <border type="none"/>
+                                <children>
+                                  <component id="10e39" class="javax.swing.JTextArea" binding="encodedTextArea">
+                                    <constraints/>
+                                    <properties/>
+                                  </component>
+                                </children>
+                              </scrollpane>
+                            </children>
+                          </grid>
+                          <grid id="ca82d" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                            <margin top="0" left="0" bottom="0" right="0"/>
+                            <constraints>
+                              <tabbedpane title="Neural Network Specifications"/>
+                            </constraints>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <scrollpane id="3d3ec">
+                                <constraints>
+                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                                </constraints>
+                                <properties>
+                                  <horizontalScrollBarPolicy value="31"/>
+                                </properties>
+                                <border type="none"/>
+                                <children>
+                                  <component id="2c530" class="javax.swing.JTextArea" binding="nnSpecsArea">
+                                    <constraints/>
+                                    <properties>
+                                      <editable value="false"/>
+                                      <lineWrap value="true"/>
+                                      <wrapStyleWord value="true"/>
+                                    </properties>
+                                  </component>
+                                </children>
+                              </scrollpane>
+                            </children>
+                          </grid>
                         </children>
-                      </grid>
-                      <grid id="ca82d" layout-manager="GridBagLayout">
-                        <constraints>
-                          <tabbedpane title="Neural Network"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children/>
-                      </grid>
+                      </tabbedpane>
                     </children>
-                  </tabbedpane>
+                  </grid>
                 </children>
               </grid>
               <grid id="b5bf8" binding="controlPanel" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -202,7 +233,7 @@
                         <properties/>
                         <border type="none" title="Final Result"/>
                         <children>
-                          <component id="f64a4" class="javax.swing.JLabel">
+                          <component id="f64a4" class="javax.swing.JLabel" binding="finalResultLabel">
                             <constraints>
                               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>

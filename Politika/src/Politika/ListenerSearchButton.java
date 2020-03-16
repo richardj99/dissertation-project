@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ListenerSearchButton implements ActionListener {
 
@@ -20,7 +21,8 @@ public class ListenerSearchButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String[] searchInfo = uiInstance.getSearchInfo();
         try {
-            logicInstance.search(searchInfo);
+            ArrayList<ArrayList<String>> searchResults = logicInstance.search(searchInfo);
+            uiInstance.populateTable(searchResults);
         } catch(SQLException sql_e){
             sql_e.printStackTrace();
         }
