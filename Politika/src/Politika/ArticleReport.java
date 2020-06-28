@@ -14,17 +14,19 @@ public class ArticleReport {
     private JTextField articleNameField;
     private JTextField authorsField;
     private JTextField partyField;
-    private JLabel leftScoreLabel;
     private JLabel rightScoreLabel;
+    private JLabel leftScoreLabel;
     private JLabel dayLabel;
     private JLabel monthLabel;
     private JLabel yearLabel;
     private JLabel finalResultLabel;
     private JPanel finalResultField;
 
-    public ArticleReport(String articleName, String authors, String articleText, String date, String leftScore,
-    String rightScore, String party){
-        JFrame f = new JFrame("Article Save");
+    public ArticleReport(String articleName, String authors, String articleText, String date, String rightScore,
+    String leftScore, String party){
+        JFrame f = new JFrame("Politika: Article Report");
+        ImageIcon img = new ImageIcon("res\\icon.png");
+        f.setIconImage(img.getImage());
         //f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setMinimumSize(new Dimension(500, 600));
         f.setVisible(true);
@@ -38,8 +40,8 @@ public class ArticleReport {
         yearLabel.setText(dateArray[0]);
         monthLabel.setText(dateArray[1]);
         dayLabel.setText(dateArray[2]);
-        leftScoreLabel.setText(leftScore);
         rightScoreLabel.setText(rightScore);
+        leftScoreLabel.setText(leftScore);
         finalResultLabel.setText(calculateScores(leftScore, rightScore));
         partyField.setText(party);
     }
@@ -47,8 +49,8 @@ public class ArticleReport {
     public String calculateScores(String left, String right){
         double leftScore = Double.parseDouble(left);
         double rightScore = Double.parseDouble(right);
-        if((leftScore>0.7) && (rightScore<0.4)) return "Labour";
-        else if((rightScore>0.7) && (leftScore<0.4)) return "Conservative";
+        if((leftScore>0.7) && (rightScore<0.4)) return "Left-Leaning";
+        else if((rightScore>0.7) && (leftScore<0.4)) return "Right-Leaning";
         else return "Inconclusive";
     }
 

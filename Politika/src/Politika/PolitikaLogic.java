@@ -23,10 +23,9 @@ public class PolitikaLogic {
     }
 
     public ArrayList<String> retreiveNNSpecs(){
-        System.out.println("dank");
         try{
             ArrayList<String> nnSpecs = new ArrayList<>();
-            Process p = rt.exec("/venv/Scripts/python.exe nnSpecs.py");
+            Process p = rt.exec("python nnSpecs.py");
             while(p.isAlive()){
 
             }
@@ -51,10 +50,8 @@ public class PolitikaLogic {
             fos = new FileOutputStream(new File("jwrite"), true);
             fos.write(inputText.getBytes("UTF-8"), 0,  inputText.length());
             fos.close();
-            Process p = rt.exec("/venv/Scripts/python.exe Predictor.py");
-            while(p.isAlive()){
-                ;
-            }
+            Process p = rt.exec("python Predictor.py");
+            while(p.isAlive()){}
             File f = new File("pwrite");
             String encodedString;
             String scriptOutput;
@@ -120,14 +117,14 @@ public class PolitikaLogic {
 
     public String calculateFinalBiasResult(Double[] results){
         String finalResult = null;
-        if((results[0] > 0.7) & (results[1] < 0.4)) finalResult = "Conservative";
-        else if((results[1] > 0.7) & (results[0] < 0.4)) finalResult = "Labour";
+        if((results[0] > 0.7) & (results[1] < 0.4)) finalResult = "Right-Leaning";
+        else if((results[1] > 0.7) & (results[0] < 0.4)) finalResult = "Left-Leaning";
         else finalResult = "Inconclusive";
         return finalResult;
     }
 
     public void saveToDB(String inputText, String articleName, String author, String[] predictions,
-                         String polParty, String dateCreated) {
+                         String polParty, String dateCreated, PolitikaInterface uiInstance) {
 
         String partyInsertSQL = "INSERT INTO Party(partyName) VALUES(?)";
         String partySelectSQL = "SELECT partyID FROM Party WHERE partyName = ?";
@@ -184,7 +181,6 @@ public class PolitikaLogic {
             String[] authorArray = author.split("; ");
             for(String authorName: authorArray){
                 String[] authorNameArray = authorName.split(", ");
-                System.out.println(authorNameArray[0] + " " + authorNameArray[1]);
 
                 PreparedStatement authorSelectStatement = conn.prepareStatement(authorSelectSQL);
                 authorSelectStatement.setString(1, authorNameArray[0]);
@@ -200,7 +196,7 @@ public class PolitikaLogic {
                     authorSelectResults.populate(authorSelectStatement.executeQuery());
                     rowNum = getNumberOfRows(authorSelectResults);
                 } else if(rowNum > 1){
-                    System.out.println("Error");
+
                 }
                 authorSelectResults.next();
                 int authorID = authorSelectResults.getInt(1);
@@ -225,12 +221,12 @@ public class PolitikaLogic {
                 "SELECT Article.articleID, Article.articleName, Article.articleDate, " +
                         "Article.ArticleContents, Article.conValPred, Article.labValPred, Party.partyName " +
                         "FROM Article INNER JOIN Party ON Party.partyID=Article.partyID " +
-                        "WHERE "  + colDiscriminant + "=?");
+                        "WHERE "  + colDiscriminant + " LIKE ?");
         if(colDiscriminant.equals("Article.articleID")){
             int articleID = Integer.parseInt(searchTerm);
             articleSearchStatement.setInt(1, articleID);
         }
-        else articleSearchStatement.setString(1, searchTerm);
+        else articleSearchStatement.setString(1, "%"+searchTerm+"%");
         CachedRowSet articleResults = rsf.createCachedRowSet();
         articleResults.populate(articleSearchStatement.executeQuery());
         int rowNum = getNumberOfRows(articleResults);
@@ -262,15 +258,15 @@ public class PolitikaLogic {
                     "INNER JOIN ArticleAuthor AA on Author.authorID = AA.authorID " +
                     "WHERE Author.lastName = ? AND Author.foreName = ?";
             authorIDStatement = conn.prepareStatement(articleSQL);
-            authorIDStatement.setString(1, name[0]);
-            authorIDStatement.setString(2, name[1]);
+            authorIDStatement.setString(1, "%"+name[0]+"%");
+            authorIDStatement.setString(2, "%"+name[1]+"%");
         } else{
             articleSQL = "SELECT AA.articleID FROM Author " +
                     "INNER JOIN ArticleAuthor AA on Author.authorID = AA.authorID " +
-                    "WHERE AUthor.lastName = ? OR Author.foreName = ?";
+                    "WHERE AUthor.lastName LIKE ? OR Author.foreName LIKE ?";
             authorIDStatement = conn.prepareStatement(articleSQL);
-            authorIDStatement.setString(1, searchTerm);
-            authorIDStatement.setString(2, searchTerm);
+            authorIDStatement.setString(1, "%"+searchTerm+"%");
+            authorIDStatement.setString(2, "%"+searchTerm+"%");
         }
         CachedRowSet authorResults = rsf.createCachedRowSet();
         authorResults.populate(authorIDStatement.executeQuery());
@@ -307,7 +303,6 @@ public class PolitikaLogic {
         return authors;
     }
 
-
     public ArrayList<ArrayList<String>> search(String[] searchInfo) throws SQLException{
         String searchTerm = searchInfo[0];
         String searchInput = searchInfo[1];
@@ -323,11 +318,6 @@ public class PolitikaLogic {
                 rows = retrieveArticleResults(searchInput, "Party.PartyName"); break;
             default:
                 return null;
-        }
-        for(ArrayList<String> list : rows){
-            for(String s : list){
-                System.out.println(s);
-            }
         }
         return rows;
     }

@@ -24,8 +24,9 @@ public class PolitikaSaveDB {
         uiInstance = pUIInstance;
         logicInstance = pLogicInstance;
 
-        JFrame f = new JFrame("Article Save");
-
+        JFrame f = new JFrame("Politika: Article Save");
+        ImageIcon img = new ImageIcon("res\\icon.png");
+        f.setIconImage(img.getImage());
         f.setContentPane(this.mainPanel);
         //f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         for(int i=1; i<=31; i++) dayBox.addItem(i);
@@ -35,7 +36,7 @@ public class PolitikaSaveDB {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         for(int i=1850; i<=year; i++) yearBox.addItem(i);
 
-        saveDBButton.addActionListener(new ListenerSaveToDBButton(this, uiInstance, logicInstance));
+        saveDBButton.addActionListener(new ListenerSaveToDBButton(this, uiInstance, logicInstance, f));
         f.pack();
         f.setMinimumSize(new Dimension(800, 500));
         f.setVisible(true);

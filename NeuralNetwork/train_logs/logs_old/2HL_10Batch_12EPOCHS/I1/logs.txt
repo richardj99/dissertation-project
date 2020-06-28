@@ -1,0 +1,49 @@
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+embedding (Embedding)        (None, None, 10)          309060
+_________________________________________________________________
+bidirectional (Bidirectional (None, 20)                1680
+_________________________________________________________________
+dense (Dense)                (None, 20)                420
+_________________________________________________________________
+dense_1 (Dense)              (None, 20)                420
+_________________________________________________________________
+dense_2 (Dense)              (None, 2)                 42
+=================================================================
+Total params: 311,622
+Trainable params: 311,622
+Non-trainable params: 0
+_________________________________________________________________
+None
+Train for 600 steps, validate for 60 steps
+Epoch 1/12
+2020-04-14 17:18:25.320541: I tensorflow/core/profiler/lib/profiler_session.cc:225] Profiler session started.
+600/600 [==============================] - 460s 767ms/step - loss: 0.6931 - accuracy: 0.5108 - val_loss: 0.6929 - val_accuracy: 0.5333
+Epoch 2/12
+600/600 [==============================] - 438s 730ms/step - loss: 0.6929 - accuracy: 0.5392 - val_loss: 0.6927 - val_accuracy: 0.5333
+Epoch 3/12
+600/600 [==============================] - 453s 754ms/step - loss: 0.6920 - accuracy: 0.5702 - val_loss: 0.6909 - val_accuracy: 0.5833
+Epoch 4/12
+600/600 [==============================] - 552s 919ms/step - loss: 0.6782 - accuracy: 0.6220 - val_loss: 0.6536 - val_accuracy: 0.6433
+Epoch 5/12
+600/600 [==============================] - 561s 936ms/step - loss: 0.6434 - accuracy: 0.6563 - val_loss: 0.6371 - val_accuracy: 0.6617
+Epoch 6/12
+600/600 [==============================] - 507s 845ms/step - loss: 0.6492 - accuracy: 0.6290 - val_loss: 0.6740 - val_accuracy: 0.6167
+Epoch 7/12
+600/600 [==============================] - 628s 1s/step - loss: 0.6610 - accuracy: 0.6593 - val_loss: 0.6662 - val_accuracy: 0.6200
+Epoch 8/12
+600/600 [==============================] - 507s 845ms/step - loss: 0.6459 - accuracy: 0.6708 - val_loss: 0.6526 - val_accuracy: 0.6317
+Epoch 9/12
+600/600 [==============================] - 454s 756ms/step - loss: 0.6158 - accuracy: 0.6947 - val_loss: 0.6225 - val_accuracy: 0.6700
+Epoch 10/12
+600/600 [==============================] - 449s 748ms/step - loss: 0.5611 - accuracy: 0.7557 - val_loss: 0.5872 - val_accuracy: 0.7200
+Epoch 11/12
+600/600 [==============================] - 435s 725ms/step - loss: 0.5351 - accuracy: 0.7782 - val_loss: 0.6099 - val_accuracy: 0.6933
+Epoch 12/12
+600/600 [==============================] - 436s 727ms/step - loss: 0.5187 - accuracy: 0.7963 - val_loss: 0.5684 - val_accuracy: 0.7317
+60/60 [==============================] - 8s 125ms/step - loss: 0.5852 - accuracy: 0.7067
+Test Loss: 0.5851525450746219
+Test Accuracy: 0.7066666483879089
+[[0.97951734 0.00503705]]

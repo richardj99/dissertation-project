@@ -17,3 +17,5 @@ xmlParser/*.csv
 Politika/src/META-INF/MANIFEST.MF
 Poster/Draft.docx
 Poster/Draft.docx
+*.v2
+*.trace

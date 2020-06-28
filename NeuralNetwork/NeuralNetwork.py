@@ -5,9 +5,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
 
-# Inputs need to be in a range of 0-1
 
-def pandas_dataset_builder(inp_df, batch, buffer, Steps, shuffle=True):
+def pandas_dataset_builder(inp_df, batch, buffer, Steps, shuffle=False):
     inp_df = inp_df.copy()
     labels = inp_df.pop('party')
     ds = tf.data.Dataset.from_tensor_slices((dict(inp_df), labels))
@@ -42,7 +41,7 @@ def sample_predict(sentence, pad):
     if pad:
         encoded_sample_pred_text = pad_to_size(encoded_sample_pred_text, 1987)
     encoded_sample_pred_text = tf.cast(encoded_sample_pred_text, tf.float32)
-    predictions = model.predict(tf.expand_dims(encoded_sample_pred_text, 0))
+    predictions = best_model.predict(tf.expand_dims(encoded_sample_pred_text, 0))
     return predictions
 
 
@@ -58,20 +57,19 @@ def plot_graphs(history, string, path):
 
 BUFFER_SIZE = 1000
 
-BATCH_SIZE = 10
+BATCH_SIZE = 15
 
-TRAIN_SIZE = 6000
-VAL_SIZE = 600
-TEST_SIZE = 600
+TRAIN_SIZE = 6108
+VAL_SIZE = 1909
+TEST_SIZE = 1527
 
-TRAIN_STEPS = 100
-VAL_STEPS = 10
-TEST_STEPS = 10
+TRAIN_STEPS = round(TRAIN_SIZE/BATCH_SIZE-0.5)
+VAL_STEPS = round(VAL_SIZE/BATCH_SIZE-0.5)
+TEST_STEPS = round(TEST_SIZE/BATCH_SIZE-0.5)
 
-EPOCHS = 50
-LAYER_SIZE = 150
+EPOCHS = 30
 
-logPath = "train_logs/" + str(EPOCHS) + "EPOCHS_" + str(LAYER_SIZE) + "LayerSize_" + str(BATCH_SIZE) + "Batch_" + "1HL"
+logPath = "train_logs/" + "1HL_" + str(BATCH_SIZE) + "Batch_" + str(EPOCHS) + "EPOCHS"
 if not (os.path.isdir(logPath)):
     os.mkdir(logPath)
 if not (os.path.isdir(logPath + "/I1")):
@@ -84,6 +82,7 @@ elif not (os.path.isdir(logPath + "/I4")):
     logPath = logPath + "/I4"
 elif not (os.path.isdir(logPath + "/I5")):
     logPath = logPath + "/I5"
+modelLoc = logPath + "/model.h5"
 os.mkdir(logPath)
 board_logs = ".\\logs\\"
 
@@ -95,15 +94,17 @@ train_df, val_df = train_test_split(df, test_size=0.2)  # Transfers 20% of datas
 train_df, test_df = train_test_split(train_df,
                                      test_size=0.2)  # Transfers 20% of dataset to test_data, rest moves to train
 
-train_data = pandas_dataset_builder(train_df, BATCH_SIZE, BUFFER_SIZE, TRAIN_STEPS, True)
-val_data = pandas_dataset_builder(val_df, BATCH_SIZE, BUFFER_SIZE, VAL_STEPS, True)
-test_data = pandas_dataset_builder(test_df, BATCH_SIZE, BUFFER_SIZE, TEST_STEPS, True)
+train_data = pandas_dataset_builder(train_df, BATCH_SIZE, BUFFER_SIZE, TRAIN_STEPS)
+val_data = pandas_dataset_builder(val_df, BATCH_SIZE, BUFFER_SIZE, VAL_STEPS)
+test_data = pandas_dataset_builder(test_df, BATCH_SIZE, BUFFER_SIZE, TEST_STEPS)
 
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(encoder.vocab_size, BATCH_SIZE),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(BATCH_SIZE, activation='tanh')),
-    #tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(, activation='tanh')),
-    tf.keras.layers.Dense(BATCH_SIZE, activation='relu'),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(BATCH_SIZE, activation='tanh')),#, return_sequences=True)),
+    #tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(BATCH_SIZE, activation='tanh')),
+    tf.keras.layers.Dense(BATCH_SIZE*2, activation='relu'),
+    #tf.keras.layers.Dense(BATCH_SIZE*2, activation='relu'),
+    #tf.keras.layers.Dense(BATCH_SIZE*2, activation='relu'),
     tf.keras.layers.Dense(2, activation='sigmoid')  # previously sigmoid
 ])
 
@@ -112,20 +113,25 @@ model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=Tru
               metrics=['accuracy'])
 
 print(model.summary())
+
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=board_logs, histogram_freq=1)
+early_stop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience = 3)
+mc = tf.keras.callbacks.ModelCheckpoint(modelLoc, monitor='val_loss', save_best_only=True)
 
 history = model.fit(train_data, epochs=EPOCHS,
                     validation_data=val_data,
                     steps_per_epoch=TRAIN_STEPS,
                     validation_steps=VAL_STEPS,
-                    callbacks=[tensorboard_callback])
+                    callbacks=[tensorboard_callback, early_stop_callback, mc])
 
-model.save(logPath + "/model.h5")
+#model.save(logPath + "/model.h5")
 
-test_loss, test_acc = model.evaluate(test_data, steps=TEST_STEPS)
+best_model = tf.keras.models.load_model(modelLoc)
 
-print('Test Loss: {}'.format(test_loss))
-print('Test Accuracy: {}'.format(test_acc))
+test_loss, test_acc = best_model.evaluate(test_data, steps=TEST_STEPS)
+
+print('Best Model Test Loss: {}'.format(test_loss))
+print('Best Model Test Accuracy: {}'.format(test_acc))
 
 testTextFile = open("testText", "r")
 sample_pred_text = testTextFile.readline()

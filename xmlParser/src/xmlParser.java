@@ -13,15 +13,13 @@ import org.json.simple.parser.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
 
 public class xmlParser {
 
     int lineCount = 0;
 
     JSONArray personsArray, orgArray, memArray;
-
-    //FileWriter csvWriter;
+    
     BufferedWriter bw;
 
     Stack<String[]> conStack, labStack;
@@ -29,8 +27,8 @@ public class xmlParser {
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, ParseException {
         xmlParser xmlP = new xmlParser();
 
-        xmlP.conStack = new Stack<String[]>();
-        xmlP.labStack =  new Stack<String[]>();
+        xmlP.conStack = new Stack<>();
+        xmlP.labStack =  new Stack<>();
 
 
         String jsonFile = "C:\\Users\\richa\\OneDrive\\Documents\\dissertation-project\\Analysis\\parlParse\\people.json";
@@ -41,21 +39,21 @@ public class xmlParser {
         xmlP.memArray = (JSONArray) jo.get("memberships");
 
         xmlP.bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("hansardDataConWeighted.csv", true), StandardCharsets.UTF_8));
+                new FileOutputStream("hansardData.csv", true), StandardCharsets.UTF_8));
 
-        xmlP.retrieveParty("uk.org.publicwhip/member/40334");
         String scrapedUrl = "C:\\Users\\richa\\OneDrive\\Documents\\dissertation-project\\Analysis\\parlParse\\scrapedxml\\debates\\";
         File scrapedDir = new File (scrapedUrl);
         File[] debateFiles = scrapedDir.listFiles();
+        assert debateFiles != null;
         for(File f: debateFiles){
             System.out.println(f.getName());
             xmlP.scrapeXML(f);
         }
-        xmlP.depleteStacksConWeighted();
+        xmlP.depleteStacks();
         System.out.println(xmlP.lineCount);
     }
 
-    public void scrapeXML(File xmlFile) throws ParserConfigurationException, IOException, SAXException, ParseException {
+    public void scrapeXML(File xmlFile) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(xmlFile);
@@ -64,26 +62,20 @@ public class xmlParser {
         for(int i=0; i<nodeList.getLength(); i++){
             Element element = (Element)nodeList.item(i);
             NodeList childNodeList = element.getChildNodes();
-            String speech = " ";
+            StringBuilder speech = new StringBuilder(" ");
             for(int j=0; j<childNodeList.getLength(); j++) {
                 Node node = childNodeList.item(j);
-                if (node.getNodeName() == "p") {
-                    int party = retrieveParty(element.getAttribute("speakerid"));
+                if ((node.getNodeName()).equals("p")) {
                     String textContents = node.getTextContent();
-                    speech = speech + " " + textContents;
-
+                    speech.append(" ").append(textContents);
                 }
             }
-            //System.out.println(speech);
-            //System.out.println("\n\n\n\n\n\n");
-            String fileName = xmlFile.getName();
-            int party = retrieveParty(element.getAttribute("speakerid"));
-            writeToStack(xmlFile.getName(), speech, party);
-
+            double party = retrieveParty(element.getAttribute("speakerid"));
+            writeToStack(speech.toString(), party);
         }
     }
 
-    public int retrieveParty(String mpCode) throws IOException, ParseException {
+    public double retrieveParty(String mpCode) {
         JSONObject memObj = null;
         for(int k = 0; k < memArray.size(); k++) {
             memObj = (JSONObject) memArray.get(k);
@@ -93,31 +85,20 @@ public class xmlParser {
                 }
             }
         }
-        int partyEncoded;
+        double partyEncoded;
+        assert memObj != null;
         switch((String)memObj.get("on_behalf_of_id")){
-            case "conservative": partyEncoded = 1; break;
-            case "labour": partyEncoded = 2; break;
-            default: partyEncoded = 10;
+            case "conservative": partyEncoded = 0.5; break;
+            case "labour": partyEncoded = 1; break;
+            default: partyEncoded = 10; System.out.println("Bwah " + memObj.get("on_behalf_of_id"));
         }
          return partyEncoded;
-    }
-
-    public JSONObject retrievePerson(String mpCode) throws IOException, ParseException{
-        JSONObject personObj = null;
-        for(int k = 0; k < personsArray.size(); k++){
-            personObj = (JSONObject) personsArray.get(k);
-            if( (personObj.get("id")).equals(mpCode)){
-                break;
-            }
-        }
-        System.out.println(personObj.get("id"));
-        return personObj;
     }
 
     public void writeToCSV(String[] record) throws IOException {
         String text = record[0];
         String party = record[1];
-        bw.append("\"" + text + "\"");
+        bw.append("\"").append(text).append("\"");
         bw.append(",");
         bw.append(party);
         bw.append("\n");
@@ -130,9 +111,11 @@ public class xmlParser {
         System.out.println("Depleting Stacks");
         int labSize = labStack.size();
         for(int i=0; i<labSize; i++){
-            writeToCSV(conStack.pop());
+            String[] con = conStack.pop(); System.out.println(con[0] + " " + con[1]);
+            writeToCSV(con);
             lineCount++;
-            writeToCSV(labStack.pop());
+            String[] lab = labStack.pop(); System.out.println(lab[0] + " " + lab[1]);
+            writeToCSV(lab);
             lineCount++;
         }
     }
@@ -169,7 +152,7 @@ public class xmlParser {
         }
     }
 
-    public void writeToStack(String i_fileName, String i_textContents, int i_party){
+    public void writeToStack(String i_textContents, double i_party){
         // Format speech text for storage in csv
         //if((i_textContents.charAt(0)).equals("\"")){}
         i_textContents = i_textContents.replace("\"", "\"\"");
@@ -180,17 +163,17 @@ public class xmlParser {
                 textWordCount++;
             }
         }
-        if((i_textContents == null) || (textWordCount<=20)) {
+        if(textWordCount <= 20) {
             //System.out.println("Skipping Null/Short Text");
         } else if(i_party == 10){
             //System.out.println("Skipping Null/Irrelevant Party");
         } else {
             String[] results = new String[2];
             results[0] = i_textContents;
-            results[1] = Integer.toString(i_party);
-            switch(i_party){
-                case 1: conStack.push(results); break;
-                case 2: labStack.push(results);break;
+            results[1] = Double.toString(i_party);
+            switch(Double.toString(i_party)){
+                case "0.5": conStack.push(results); break;
+                case "1.0": labStack.push(results);break;
                 default: break;
             }
         }

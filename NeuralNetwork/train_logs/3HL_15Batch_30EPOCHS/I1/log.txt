@@ -1,0 +1,12 @@
+Epoch 9/30
+407/407 [==============================] - 537s 1s/step - loss: 0.4697 - accuracy: 0.8460 - val_loss: 0.5889 - val_accuracy: 0.7092
+Epoch 10/30
+407/407 [==============================] - 570s 1s/step - loss: 0.4558 - accuracy: 0.8601 - val_loss: 0.6001 - val_accuracy: 0.6976
+Epoch 11/30
+407/407 [==============================] - 591s 1s/step - loss: 0.5586 - accuracy: 0.7492 - val_loss: 0.6331 - val_accuracy: 0.6357
+Epoch 12/30
+407/407 [==============================] - 535s 1s/step - loss: 0.5129 - accuracy: 0.8038 - val_loss: 0.5924 - val_accuracy: 0.6961
+101/101 [==============================] - 27s 268ms/step - loss: 0.5898 - accuracy: 0.7056
+Best Model Test Loss: 0.589782423312121
+Best Model Test Accuracy: 0.7056105732917786
+[[0.9804268  0.02688355]]

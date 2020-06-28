@@ -38,10 +38,13 @@ public class PolitikaInterface {
 
     private PolitikaLogic logicInstance;
 
+    private int analysedTextHash = 0;
     private final String[] searchTerms = new String[]{"Name", "Date", "Author", "Party"};
 
     public PolitikaInterface(PolitikaLogic parentLogicInstance){
-        JFrame f = new JFrame("Article Save");
+        JFrame f = new JFrame("Politika");
+        ImageIcon img = new ImageIcon("res\\icon.png");
+        f.setIconImage(img.getImage());
         logicInstance = parentLogicInstance;
         f.setContentPane(this.mainPanel);
         ButtonGroup bg = new ButtonGroup();
@@ -86,6 +89,10 @@ public class PolitikaInterface {
         this.log("Neural Network Configuration Loaded");
         this.log("Details on the Neural Network used in this version of Politika can be found in the Neural Network Configurations Tab");
     }
+
+    public int getAnalysedTextHash(){return analysedTextHash;}
+
+    public void setAnalysedTextHash(String analysedText){analysedTextHash = analysedText.hashCode();}
 
     public void log(String message){
         Date date = new Date();
@@ -171,10 +178,10 @@ public class PolitikaInterface {
     public static void main(String args[]){
         PolitikaLogic logicInstance = new PolitikaLogic();
         new Thread(() -> {
-            try {UIManager.setLookAndFeel(new DarculaLaf());}
-            catch (UnsupportedLookAndFeelException e) {e.printStackTrace();}
+            try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+            catch (UnsupportedLookAndFeelException | IllegalAccessException e) {e.printStackTrace();} catch (InstantiationException e) {e.printStackTrace();}
+            catch (ClassNotFoundException e) {e.printStackTrace();}
             PolitikaInterface uiInstance = new PolitikaInterface(logicInstance);
         }).start();
-
     }
 }
