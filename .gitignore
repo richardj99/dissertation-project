@@ -12,6 +12,7 @@ xmlParser/hansardData.csv
 venv/
 .vscode/
 NeuralNetwork/dataMassage/
+NeuralNetwork\logs\
 xmlParser/*.csv
 Politika/src/META-INF/MANIFEST.MF
 Poster/Draft.docx
