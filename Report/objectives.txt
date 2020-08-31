@@ -1,5 +1,0 @@
-The following objectives outlined will serve as the full requirements of the final product that the project will aim to achieve:
-1.	The project shall produce a neural network model capable of analysing political bias in text.
-1.1.	The model shall be capable of taking in text of variable lengths as an input.
-1.2.	The model shall be capable of outputting an array of values representing the activation of the output nodes of the model.
-2.	The project shall provide an interface for the user to interact with the neural network model.

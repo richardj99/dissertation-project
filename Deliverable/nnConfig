@@ -1,0 +1,6 @@
+30906
+4
+embedding 30906 15
+lstm 15 tanh
+dense 30 relu
+dense_1 2 sigmoid
