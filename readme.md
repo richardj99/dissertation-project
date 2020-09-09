@@ -1,3 +1,4 @@
+![Politika Icon](https://github.com/richardj99/political-bias-detection/blob/master/Deliverable/res/icon.png)
 # Detecting Political Bias in Text - Dissertation Project
 Full documentation can be found in my **<ins>[Report](https://github.com/richardj99/political-bias-detection/blob/master/political-bias-detection.pdf)<ins>**
 ## Project Objectives
