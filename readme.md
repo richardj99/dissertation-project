@@ -1,5 +1,5 @@
 # Detecting Political Bias in Text - Dissertation Project
-Full documentation can be found in my [Report](https://github.com/richardj99/political-bias-detection/blob/master/political-bias-detection.pdf)
+Full documentation can be found in my **<ins>[Report](https://github.com/richardj99/political-bias-detection/blob/master/political-bias-detection.pdf)<ins>**
 ## Project Objectives
 * Use Long Short-Term Memory Network to detect Left-Right Political Bias in Variable Length Text.
 * Provide a UI that permits users to analyse their own texts against a trained model.
