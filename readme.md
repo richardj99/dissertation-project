@@ -13,6 +13,8 @@ Full documentation can be found in my **<ins>[Report](https://github.com/richard
 * The Neural Network Train/Test/Validate data was compiled from the UK Parliamentary Debate Archive (Hansard) using the parlParse XML repository.
 * The debate texts were retrieved from 2015-19 and labelled based on the political inclination to the political party of the speaker.
 * Text data encoded using Tensorflow's subword-text encoder, to increase the longevity of the model used.
+### User-Interface Final Design
+![Final Design and Implemenation of Politika](https://github.com/richardj99/political-bias-detection/blob/master/Deliverable/res/UI1.png)
 ## Results
 * All features of project implemented successfully.
 * Final compiled model reached an accuracy of 73%
